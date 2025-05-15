@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.codemonkey</groupId>
+    <artifactId>valkey-cluster-docker</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <docker.image.name>${project.artifactId}</docker.image.name>
+        <valkey.version>8.1.1</valkey.version>
+    </properties>
+
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/info</directory>
+                <targetPath>${dockerfile.dir}</targetPath>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/io/codemonkey/valkey/docker/node</directory>
+                <targetPath>${dockerfile.dir}</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>Dockerfile</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.41.0</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>codemonkey/valkey-server:${valkey.version}</name>
+                            <build>
+                                <dockerFile>${project.basedir}/src/main/io/codemonkey/valkey/docker/node/Dockerfile</dockerFile>
+                                <contextDir>${project.basedir}/src/main/io/codemonkey/valkey/docker/node/</contextDir>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
